@@ -1,0 +1,42 @@
+library ieee;
+USE ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+USE work.aux_package.all;
+-------------------------------------
+ENTITY top IS
+  GENERIC (n : INTEGER := 16);
+  PORT 
+  (  
+	Y_i,X_i: IN STD_LOGIC_VECTOR (n-1 DOWNTO 0);
+		  ALUFN_i : IN STD_LOGIC_VECTOR (4 DOWNTO 0);
+		  en, clk, rst: in std_logic;
+          V, Z, C, N_f: out std_logic;
+          ALUout: out std_logic_vector(n-1 downto 0);
+          pwm_out: out std_logic
+  );
+END top;
+------------- complete the top Architecture code --------------
+architecture top_arch of top is 
+begin
+	alu_configuration: alu generic map (n=>n) port map (
+        Y_i => Y_i,
+        X_i => X_i,
+        ALUFN_i => ALUFN_i,
+        ALUout_o => ALUout,
+        Nflag_o => N_f,
+        Cflag_o => C,
+        Zflag_o => Z,
+        Vflag_o => V
+    );
+
+    pwm_configuration: pwm_top generic map (n=>n) port map (
+        Y_i => Y_i,
+        X_i => X_i,
+        ALUFN_i => ALUFN_i,
+        en => en,
+        clk => clk,
+        rst => rst,
+        pwm_out => pwm_out
+    );
+end architecture;
